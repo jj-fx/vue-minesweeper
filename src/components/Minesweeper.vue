@@ -1,12 +1,17 @@
 <template>
-    <div class="minefield">
-
-
-        <ul class="column" v-for="col in columns" :key="col">
-            <li class="row" v-for="row in rows" :key="row">
-                <Field :field="(row + (col - 1) * columns).toString()"/>
-            </li>
-        </ul>
+    <div>
+        <div class="game-area" @click="plantMines(rows, mineCount)">
+            <div>
+                <button>RESET</button>
+            </div>
+            <div class="minefield">
+                <ul class="column" v-for="col in columns" :key="col">
+                    <li class="row" v-for="row in rows" :key="row">
+                        <Field :field="mineFields[(row + (col - 1) * rows) - 1].toString()"/>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -19,12 +24,13 @@
             Field,
         },
         created() {
-            this.plantMines(7, 15);
+            this.plantMines(this.rows, this.mineCount);
         },
         data() {
             return {
                 rows: 7,
                 columns: 7,
+                mineCount: 15,
                 mineFields: [],
             }
         },
@@ -60,6 +66,13 @@
 
     a {
         color: #42b983;
+    }
+
+    .game-area {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        height: 400px;
     }
 
     .minefield {
