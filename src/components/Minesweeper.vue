@@ -1,10 +1,12 @@
 <template>
     <div class="minefield">
-        <li class="column" v-for="col in columns" :key="col">
-            <ul class="row" v-for="row in rows" :key="row">
-                <Field />
-            </ul>
-        </li>
+
+
+        <ul class="column" v-for="col in columns" :key="col">
+            <li class="row" v-for="row in rows" :key="row">
+                <Field :field="(row + (col - 1) * columns).toString()"/>
+            </li>
+        </ul>
     </div>
 </template>
 
@@ -16,13 +18,33 @@
         components: {
             Field,
         },
+        created() {
+            this.plantMines(7, 15);
+        },
         data() {
             return {
-                name: this.name,
                 rows: 7,
                 columns: 7,
+                mineFields: [],
             }
-        }
+        },
+        methods: {
+            plantMines(fieldSize, mineCount) {
+                // Init empty array
+                this.mineFields = Array(Math.pow(fieldSize, 2)).fill('');
+
+                for (let i = 0; i < mineCount; i++) {
+                    let plantMine = false;
+                    do { // repeat so we hit the mineCount
+                        const randomField = Math.floor(Math.random() * this.mineFields.length);
+                        if (this.mineFields[randomField] === '') {
+                            this.mineFields[randomField] = 'X';
+                            plantMine = false;
+                        } else plantMine = true;
+                    } while (plantMine)
+                }
+            },
+        },
     }
 </script>
 
@@ -34,11 +56,6 @@
     ul {
         list-style-type: none;
         padding: 0;
-    }
-
-    li {
-        display: inline-block;
-        margin: 0 10px;
     }
 
     a {

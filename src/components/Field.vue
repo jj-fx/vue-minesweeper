@@ -1,12 +1,23 @@
 <template>
-    <div class="square">
-        X
+    <div class="square" @click="selectField">
+        {{ field }}
     </div>
 </template>
 
 <script>
     export default {
-        name: "Field"
+        name: "Field",
+        methods: {
+            selectField() {
+                console.log(this.field);
+            }
+        },
+        props: {
+            field: {
+                type: String,
+                default: 'X',
+            },
+        },
     }
 </script>
 
