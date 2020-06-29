@@ -1,5 +1,5 @@
 <template>
-    <div :class="classObject" @click="selectField">
+    <div :class="classObject" @click="changeState">
         {{ field }}
     </div>
 </template>
@@ -7,28 +7,36 @@
 <script>
     export default {
         name: "Field",
-        methods: {
-            selectField() {
-                this.unexplored = false;
+        data() {
+            return {
+                explored: false,
             }
         },
         props: {
+            id: {
+                type: Number,
+                default: -1,
+            },
             field: {
                 type: String,
                 default: 'X',
             },
-            unexplored: {
-                type: Boolean,
-                default: true,
+        },
+        methods: {
+            changeState() {
+                this.$emit("updateField", this.id);
+                this.explored = true;
+                if (this.field === 'X')
+                    console.log('You lost!');
             }
         },
         computed: {
             classObject: function () {
-                if (this.unexplored === true) {
+                if (this.explored === false) {
                     return 'square unexplored';
                 } else {
                     if (this.field === 'X')
-                        return 'square unexplored';
+                        return 'square mine';
                     else if (this.field === '0')
                         return 'square v0';
                     else if (this.field === '1')
@@ -69,6 +77,11 @@
         padding: 0;
         text-align: center;
         width: 34px;
+    }
+
+    .mine {
+        background: #bf1414;
+        color: rgba(0, 0, 0, 125);
     }
 
     .unexplored {

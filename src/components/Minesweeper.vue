@@ -7,7 +7,12 @@
             <div class="minefield">
                 <ul class="column" v-for="col in columns" :key="col">
                     <li class="row" v-for="row in rows" :key="row">
-                        <Field :field="mineFields[(row + (col - 1) * rows) - 1].toString()" :unexplored="true"/>
+                        <Field
+                                :field="mineFields[(row + (col - 1) * rows) - 1].toString()"
+                                :explored="exploredFields[(row + (col - 1) * rows) - 1]"
+                                :id="(row + (col - 1) * rows) - 1"
+                                @updateField="exploreField"
+                        />
                     </li>
                 </ul>
             </div>
@@ -32,12 +37,18 @@
                 columns: 7,
                 mineCount: 12,
                 mineFields: [],
+                exploredFields: [],
             }
         },
         methods: {
+            exploreField(index) {
+                this.exploredFields[index] = true;
+                return this.exploredFields;
+            },
             plantMines(fieldSize, mineCount) {
                 // Init empty array
                 this.mineFields = Array(Math.pow(fieldSize, 2)).fill('');
+                this.exploredFields = Array(Math.pow(fieldSize, 2)).fill(false);
 
                 for (let i = 0; i < mineCount; i++) {
                     let plantMine = false;
@@ -58,42 +69,39 @@
                     const row = index % this.rows;
 
                     // N
-                    count += this.inspectCell(row + 1, col, item);
+                    count += this.inspectField(row + 1, col, item);
 
                     // S
-                    count += this.inspectCell(row - 1, col, item);
+                    count += this.inspectField(row - 1, col, item);
 
                     // E
-                    count += this.inspectCell(row, col - 1, item);
+                    count += this.inspectField(row, col - 1, item);
 
                     // W
-                    count += this.inspectCell(row, col + 1, item);
+                    count += this.inspectField(row, col + 1, item);
 
                     // N-E
-                    count += this.inspectCell(row + 1, col - 1, item);
+                    count += this.inspectField(row + 1, col - 1, item);
 
                     // N-W
-                    count += this.inspectCell(row + 1, col + 1, item);
+                    count += this.inspectField(row + 1, col + 1, item);
 
                     // S-E
-                    count += this.inspectCell(row - 1, col - 1, item);
+                    count += this.inspectField(row - 1, col - 1, item);
 
                     // S-W
-                    count += this.inspectCell(row - 1, col + 1, item);
+                    count += this.inspectField(row - 1, col + 1, item);
 
                     if (item !== 'X') {
                         this.mineFields[index] = count;
-                        //console.log(item.isMine);
                     }
-
                 });
-
-                return this.mineFields;
+                //return this.mineFields;
             },
             isValid(row, col) {
                 return (row >= 0) && (row < this.rows) && (col >= 0) && (col < this.columns);
             },
-            inspectCell(row, col, item) {
+            inspectField(row, col, item) {
                 if (item !== 'X') {
                     if (this.isValid(row, col) === true) {
                         const field = col * this.rows + row;
