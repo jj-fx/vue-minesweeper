@@ -1,13 +1,13 @@
 <template>
     <div>
-        <div class="game-area" @click="plantMines(rows, mineCount)">
+        <div class="game-area">
             <div>
-                <button>RESET</button>
+                <button @click="plantMines(rows, mineCount)">RESET</button>
             </div>
             <div class="minefield">
                 <ul class="column" v-for="col in columns" :key="col">
                     <li class="row" v-for="row in rows" :key="row">
-                        <Field :field="mineFields[(row + (col - 1) * rows) - 1].toString()"/>
+                        <Field :field="mineFields[(row + (col - 1) * rows) - 1].toString()" :unexplored="true"/>
                     </li>
                 </ul>
             </div>
@@ -134,7 +134,8 @@
     }
 
     .column {
-        display: inline-block;
+        /*display: inline-block;*/
         margin: 0;
+        width: 35px;
     }
 </style>

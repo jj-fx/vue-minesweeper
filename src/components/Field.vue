@@ -9,7 +9,7 @@
         name: "Field",
         methods: {
             selectField() {
-                console.log(this.field);
+                this.unexplored = false;
             }
         },
         props: {
@@ -17,32 +17,39 @@
                 type: String,
                 default: 'X',
             },
+            unexplored: {
+                type: Boolean,
+                default: true,
+            }
         },
         computed: {
             classObject: function () {
-                if (this.field === 'X')
+                if (this.unexplored === true) {
                     return 'square unexplored';
-                else if (this.field === '0')
-                    return 'square v0';
-                else if (this.field === '1')
-                    return 'square v1';
-                else if (this.field === '2')
-                    return 'square v2';
-                else if (this.field === '3')
-                    return 'square v3';
-                else if (this.field === '4')
-                    return 'square v4';
-                else if (this.field === '5')
-                    return 'square v5';
-                else if (this.field === '6')
-                    return 'square v6';
-                else if (this.field === '7')
-                    return 'square v7';
-                else if (this.field === '8')
-                    return 'square v8';
-                else
-                    return 'square';
-
+                } else {
+                    if (this.field === 'X')
+                        return 'square unexplored';
+                    else if (this.field === '0')
+                        return 'square v0';
+                    else if (this.field === '1')
+                        return 'square v1';
+                    else if (this.field === '2')
+                        return 'square v2';
+                    else if (this.field === '3')
+                        return 'square v3';
+                    else if (this.field === '4')
+                        return 'square v4';
+                    else if (this.field === '5')
+                        return 'square v5';
+                    else if (this.field === '6')
+                        return 'square v6';
+                    else if (this.field === '7')
+                        return 'square v7';
+                    else if (this.field === '8')
+                        return 'square v8';
+                    else
+                        return 'square';
+                }
             }
         },
     }
@@ -63,34 +70,44 @@
         text-align: center;
         width: 34px;
     }
+
     .unexplored {
         background: #585858;
         color: rgba(255, 255, 255, 0);
     }
+
     .v0 {
         color: rgba(255, 255, 255, 0);
     }
+
     .v1 {
         color: #f8ff74;
     }
+
     .v2 {
         color: #74f7ff;
     }
+
     .v3 {
         color: #8a82ff;
     }
+
     .v4 {
         color: #3046ff;
     }
+
     .v5 {
         color: #15fd2e;
     }
+
     .v6 {
         color: #eefc07;
     }
+
     .v7 {
         color: #ff571a;
     }
+
     .v8 {
         color: #ff13af;
     }
