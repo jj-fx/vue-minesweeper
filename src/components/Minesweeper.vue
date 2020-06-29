@@ -2,14 +2,13 @@
     <div>
         <div class="game-area">
             <div>
-                <button @click="plantMines(rows, mineCount)">RESET</button>
+                <button @click="resetMinefield(rows, mineCount), resetFields">RESET</button>
             </div>
             <div class="minefield">
                 <ul class="column" v-for="col in columns" :key="col">
                     <li class="row" v-for="row in rows" :key="row">
                         <Field
                                 :field="mineFields[(row + (col - 1) * rows) - 1].toString()"
-                                :explored="exploredFields[(row + (col - 1) * rows) - 1]"
                                 :id="(row + (col - 1) * rows) - 1"
                                 @updateField="exploreField"
                         />
@@ -29,7 +28,7 @@
             Field,
         },
         created() {
-            this.plantMines(this.rows, this.mineCount);
+            this.resetMinefield(this.rows, this.mineCount);
         },
         data() {
             return {
@@ -41,14 +40,19 @@
             }
         },
         methods: {
+            resetFields() {
+                console.log('reset');
+            },
             exploreField(index) {
                 this.exploredFields[index] = true;
+                //console.log(index);
                 return this.exploredFields;
             },
-            plantMines(fieldSize, mineCount) {
+            resetMinefield(fieldSize, mineCount) {
                 // Init empty array
                 this.mineFields = Array(Math.pow(fieldSize, 2)).fill('');
                 this.exploredFields = Array(Math.pow(fieldSize, 2)).fill(false);
+                this.$emit("resetField");
 
                 for (let i = 0; i < mineCount; i++) {
                     let plantMine = false;
@@ -69,28 +73,28 @@
                     const row = index % this.rows;
 
                     // N
-                    count += this.inspectField(row + 1, col, item);
+                    count += this.inspectField(row + 1, col, item, 'X');
 
                     // S
-                    count += this.inspectField(row - 1, col, item);
+                    count += this.inspectField(row - 1, col, item, 'X');
 
                     // E
-                    count += this.inspectField(row, col - 1, item);
+                    count += this.inspectField(row, col - 1, item, 'X');
 
                     // W
-                    count += this.inspectField(row, col + 1, item);
+                    count += this.inspectField(row, col + 1, item, 'X');
 
                     // N-E
-                    count += this.inspectField(row + 1, col - 1, item);
+                    count += this.inspectField(row + 1, col - 1, item, 'X');
 
                     // N-W
-                    count += this.inspectField(row + 1, col + 1, item);
+                    count += this.inspectField(row + 1, col + 1, item, 'X');
 
                     // S-E
-                    count += this.inspectField(row - 1, col - 1, item);
+                    count += this.inspectField(row - 1, col - 1, item, 'X');
 
                     // S-W
-                    count += this.inspectField(row - 1, col + 1, item);
+                    count += this.inspectField(row - 1, col + 1, item, 'X');
 
                     if (item !== 'X') {
                         this.mineFields[index] = count;
@@ -101,11 +105,11 @@
             isValid(row, col) {
                 return (row >= 0) && (row < this.rows) && (col >= 0) && (col < this.columns);
             },
-            inspectField(row, col, item) {
-                if (item !== 'X') {
+            inspectField(row, col, item, value) {
+                if (item !== value) {
                     if (this.isValid(row, col) === true) {
                         const field = col * this.rows + row;
-                        if (this.mineFields[field] === 'X')
+                        if (this.mineFields[field] === value)
                             return 1;
                         else return 0;
                     } else return 0;

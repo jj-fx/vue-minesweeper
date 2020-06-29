@@ -10,6 +10,7 @@
         data() {
             return {
                 explored: false,
+                doReset: false,
             }
         },
         props: {
@@ -31,7 +32,7 @@
             }
         },
         computed: {
-            classObject: function () {
+            classObject: function() {
                 if (this.explored === false) {
                     return 'square unexplored';
                 } else {
