@@ -30,7 +30,7 @@
             return {
                 rows: 7,
                 columns: 7,
-                mineCount: 15,
+                mineCount: 12,
                 mineFields: [],
             }
         },
@@ -49,7 +49,60 @@
                         } else plantMine = true;
                     } while (plantMine)
                 }
+
+                this.mineFields.forEach((item, index) => {
+                    let count = 0;
+                    // get columns
+                    const col = Math.floor(index / this.rows);
+                    // get rows
+                    const row = index % this.rows;
+
+                    // N
+                    count += this.inspectCell(row + 1, col, item);
+
+                    // S
+                    count += this.inspectCell(row - 1, col, item);
+
+                    // E
+                    count += this.inspectCell(row, col - 1, item);
+
+                    // W
+                    count += this.inspectCell(row, col + 1, item);
+
+                    // N-E
+                    count += this.inspectCell(row + 1, col - 1, item);
+
+                    // N-W
+                    count += this.inspectCell(row + 1, col + 1, item);
+
+                    // S-E
+                    count += this.inspectCell(row - 1, col - 1, item);
+
+                    // S-W
+                    count += this.inspectCell(row - 1, col + 1, item);
+
+                    if (item !== 'X') {
+                        this.mineFields[index] = count;
+                        //console.log(item.isMine);
+                    }
+
+                });
+
+                return this.mineFields;
             },
+            isValid(row, col) {
+                return (row >= 0) && (row < this.rows) && (col >= 0) && (col < this.columns);
+            },
+            inspectCell(row, col, item) {
+                if (item !== 'X') {
+                    if (this.isValid(row, col) === true) {
+                        const field = col * this.rows + row;
+                        if (this.mineFields[field] === 'X')
+                            return 1;
+                        else return 0;
+                    } else return 0;
+                } else return 0;
+            }
         },
     }
 </script>
