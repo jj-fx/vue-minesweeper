@@ -9,8 +9,6 @@
         name: "Field",
         data() {
             return {
-                explored: false,
-                doReset: false,
             }
         },
         props: {
@@ -22,13 +20,14 @@
                 type: String,
                 default: 'X',
             },
+            explored: {
+                type: Boolean,
+                default: false,
+            }
         },
         methods: {
             changeState() {
-                this.$emit("updateField", this.id);
-                this.explored = true;
-                if (this.field === 'X')
-                    console.log('You lost!');
+                this.$emit("update", this.id);
             }
         },
         computed: {

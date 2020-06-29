@@ -2,7 +2,7 @@
     <div>
         <div class="game-area">
             <div>
-                <button @click="resetMinefield(rows, mineCount), resetFields">RESET</button>
+                <button @click="resetMinefield(rows, mineCount)">RESET</button>
             </div>
             <div class="minefield">
                 <ul class="column" v-for="col in columns" :key="col">
@@ -10,7 +10,8 @@
                         <Field
                                 :field="mineFields[(row + (col - 1) * rows) - 1].toString()"
                                 :id="(row + (col - 1) * rows) - 1"
-                                @updateField="exploreField"
+                                :explored="exploredFields[(row + (col - 1) * rows) - 1]"
+                                @update="exploreField"
                         />
                     </li>
                 </ul>
@@ -34,25 +35,20 @@
             return {
                 rows: 7,
                 columns: 7,
-                mineCount: 12,
+                mineCount: 5,
                 mineFields: [],
                 exploredFields: [],
             }
         },
         methods: {
-            resetFields() {
-                console.log('reset');
-            },
             exploreField(index) {
-                this.exploredFields[index] = true;
+                this.$set(this.exploredFields, index, true);
                 //console.log(index);
-                return this.exploredFields;
             },
             resetMinefield(fieldSize, mineCount) {
                 // Init empty array
                 this.mineFields = Array(Math.pow(fieldSize, 2)).fill('');
                 this.exploredFields = Array(Math.pow(fieldSize, 2)).fill(false);
-                this.$emit("resetField");
 
                 for (let i = 0; i < mineCount; i++) {
                     let plantMine = false;
