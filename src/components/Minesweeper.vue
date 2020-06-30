@@ -12,6 +12,7 @@
                                 :field="mineFields[(row + (col - 1) * rows) - 1].toString()"
                                 :id="(row + (col - 1) * rows) - 1"
                                 :explored="exploredFields[(row + (col - 1) * rows) - 1]"
+                                :lost="gameOver"
                                 @update="exploreField"
                         />
                     </li>
@@ -42,16 +43,17 @@
             return {
                 rows: 7,
                 columns: 7,
-                mineCount: 15,
+                mineCount: 9,
                 mineFields: [],
                 exploredFields: [],
                 message: '',
+                gameOver: false,
             }
         },
         methods: {
             setSize() {
                 const value = parseInt(document.getElementById("aaa").value);
-                this.mineCount = Math.floor(Math.pow(this.rows, 2) / 3.33);
+                this.mineCount = Math.floor(Math.pow(value, 2) / 5.5);
                 this.rows = value;
                 this.columns = value;
                 this.resetMinefield(this.rows, this.mineCount);
@@ -60,6 +62,7 @@
                 // game over
                 if (this.mineFields[field_index] === 'X') {
                     this.message = 'GAME OVER!';
+                    this.gameOver = true;
                 }
                 // set current
                 this.$set(this.exploredFields, field_index, true);
@@ -99,6 +102,7 @@
             },
             resetMinefield(fieldSize, mineCount) {
                 this.message = 'Just click on cells...';
+                this.gameOver = false;
                 // Init empty array
                 this.mineFields = Array(Math.pow(fieldSize, 2)).fill('');
                 this.exploredFields = Array(Math.pow(fieldSize, 2)).fill(false);

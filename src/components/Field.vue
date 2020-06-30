@@ -23,15 +23,25 @@
             explored: {
                 type: Boolean,
                 default: false,
+            },
+            lost: {
+                type: Boolean,
+                default: false,
             }
         },
         methods: {
             changeState() {
-                this.$emit("update", this.id);
+                if (this.lost === false) {
+                    this.$emit("update", this.id);
+                }
             }
         },
         computed: {
             classObject: function() {
+                if (this.lost === true && this.field === 'X') {
+                    return 'square mine';
+                }
+
                 if (this.explored === false) {
                     return 'square unexplored';
                 } else {
