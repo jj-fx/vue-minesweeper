@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        <h1 class="build-code">build : a_02</h1>
         <!--<HelloWorld msg="Welcome to Your Vue.js App"/>-->
         <Minesweeper/>
     </div>
@@ -23,7 +24,14 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         text-align: center;
-        color: #2c3e50;
+        color: #404040;
         margin-top: 60px;
+        background-color: #3a3a3a;
+    }
+    .build-code {
+        text-align: left;
+        font-size: 18px;
+        padding: 8px;
+        color: #535252;
     }
 </style>

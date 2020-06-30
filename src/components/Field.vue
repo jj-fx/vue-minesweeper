@@ -65,18 +65,19 @@
 
 <style scoped>
     .square {
+        height: 44px;
+        width: 44px;
+        line-height: 44px;
         background: #c9c9c9;
-        border: 1px solid #999;
-        float: left;
+        border: 1px solid #a7afaf;
+        border-radius: 5px;
+        //float: left;
         font-size: 24px;
         font-weight: bold;
-        line-height: 34px;
-        height: 34px;
         margin-right: -1px;
         margin-top: -1px;
         padding: 0;
-        text-align: center;
-        width: 34px;
+        //text-align: center;
     }
 
     .mine {
@@ -85,8 +86,8 @@
     }
 
     .unexplored {
-        background: rgb(139, 113, 113);
-        color: rgba(173, 162, 162, 0);
+        background: #3d3936;
+        color: rgba(0, 0, 0, 0);
     }
 
     .v0 {

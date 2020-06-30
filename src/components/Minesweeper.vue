@@ -1,8 +1,9 @@
 <template>
-    <div>
+    <div class="game-container">
         <div class="game-area">
-            <div>
-                <button @click="resetMinefield(rows, mineCount)">RESET</button>
+            <div class="reset-container">
+                <button class="reset" @click="resetMinefield(rows, mineCount)">RESET</button>
+                <input id="aaa" class="reset" type="number" :value="rows" style="width: 60px" @change="setSize">
             </div>
             <div class="minefield">
                 <ul class="column" v-for="col in columns" :key="col">
@@ -35,11 +36,12 @@
         },
         created() {
             this.resetMinefield(this.rows, this.mineCount);
+            this.message = 'Just click on cells...'
         },
         data() {
             return {
-                rows: 11,
-                columns: 11,
+                rows: 7,
+                columns: 7,
                 mineCount: 15,
                 mineFields: [],
                 exploredFields: [],
@@ -47,6 +49,13 @@
             }
         },
         methods: {
+            setSize() {
+                const value = parseInt(document.getElementById("aaa").value);
+                this.mineCount = Math.floor(Math.pow(this.rows, 2) / 3.33);
+                this.rows = value;
+                this.columns = value;
+                this.resetMinefield(this.rows, this.mineCount);
+            },
             exploreField(field_index) {
                 // game over
                 if (this.mineFields[field_index] === 'X') {
@@ -89,7 +98,7 @@
                 });
             },
             resetMinefield(fieldSize, mineCount) {
-                this.message = '';
+                this.message = 'Just click on cells...';
                 // Init empty array
                 this.mineFields = Array(Math.pow(fieldSize, 2)).fill('');
                 this.exploredFields = Array(Math.pow(fieldSize, 2)).fill(false);
@@ -210,7 +219,7 @@
                 if (this.mineFields[field_index] === 0 && this.exploredFields[field_index] === false) {
                     // this item is empty
                     this.$set(this.exploredFields, field_index, true);
-                    const neighbors = this.getCloseFields(field_index, false);
+                    const neighbors = this.getCloseFields(field_index, true);
                     neighbors.forEach((item) => {
                         this.exploreEmpty(item);
                     });
@@ -220,10 +229,10 @@
         computed: {
             classObject: function() {
                 if (this.message === 'GAME OVER!') {
-                    return 'red';
+                    return 'game-over bottom';
                 } else if (this.message === '!!! You Win !!!') {
-                    return 'green';
-                } else return '';
+                    return 'win bottom';
+                } else return 'default bottom';
             }
         }
     }
@@ -243,29 +252,51 @@
         color: #42b983;
     }
 
+    .game-container {
+        //height: 900px;
+    }
+
+    .reset-container {
+        margin-bottom: 20px;
+    }
+
+    .reset {
+        font-size: 30px;
+        //width: 100px;
+    }
+
     .game-area {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        height: 400px;
+        //display: flex;
+        //flex-direction: column;
+        //justify-content: space-around;
+        //height: auto;
+        //padding: 2px;
     }
 
     .minefield {
         display: flex;
         justify-content: center;
+        background-color: #5f5f65;
+        //border-radius: 5px;
     }
 
     .column {
-        /*display: inline-block;*/
-        margin: 0;
-        width: 35px;
+        //background-color: #3046ff;
     }
 
-    .red {
+    .bottom {
+
+    }
+
+    .game-over {
         color: red;
     }
 
-    .green {
+    .win {
         color: greenyellow;
+    }
+
+    .default {
+        color: white;
     }
 </style>
