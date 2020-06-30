@@ -85,8 +85,8 @@
     }
 
     .unexplored {
-        background: #585858;
-        color: rgba(255, 255, 255, 0);
+        background: rgb(139, 113, 113);
+        color: rgba(173, 162, 162, 0);
     }
 
     .v0 {

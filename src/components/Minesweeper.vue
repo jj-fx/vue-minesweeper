@@ -16,6 +16,11 @@
                     </li>
                 </ul>
             </div>
+            <div>
+                <h1 :class="classObject">
+                    {{ message }}
+                </h1>
+            </div>
         </div>
     </div>
 </template>
@@ -33,17 +38,45 @@
         },
         data() {
             return {
-                rows: 7,
-                columns: 7,
-                mineCount: 5,
+                rows: 11,
+                columns: 11,
+                mineCount: 9,
                 mineFields: [],
                 exploredFields: [],
+                message: '',
             }
         },
         methods: {
-            exploreField(index) {
-                this.$set(this.exploredFields, index, true);
-                //console.log(index);
+            exploreField(field_index) {
+                // game over
+                if (this.mineFields[field_index] === 'X') {
+                    this.message = 'GAME OVER!';
+                }
+                // set current
+                this.$set(this.exploredFields, field_index, true);
+                // explore empty fields
+                if (this.mineFields[field_index] === 0) {
+                    const neighbors = this.getCloseFields(field_index);
+                    neighbors.forEach((item) => {
+                        this.exploreEmpty(item);
+                    });
+                }
+                // get the expanded
+                const toExpand = new Set();
+                this.exploredFields.forEach((item, index) => {
+                    if (this.mineFields[index] === 0 && item === true) {
+                        const neighbors = this.getCloseFields(index, true);
+                        neighbors.forEach((item) => {
+                            toExpand.add(item);
+                        });
+                    }
+                });
+                // unhide expansion
+                toExpand.forEach((item) => {
+                    if (this.exploredFields[item] === false) {
+                        this.$set(this.exploredFields, item, true);
+                    }
+                });
             },
             resetMinefield(fieldSize, mineCount) {
                 // Init empty array
@@ -69,39 +102,40 @@
                     const row = index % this.rows;
 
                     // N
-                    count += this.inspectField(row + 1, col, item, 'X');
+                    count += this.isThisAMine(row + 1, col, item, 'X');
 
                     // S
-                    count += this.inspectField(row - 1, col, item, 'X');
+                    count += this.isThisAMine(row - 1, col, item, 'X');
 
                     // E
-                    count += this.inspectField(row, col - 1, item, 'X');
+                    count += this.isThisAMine(row, col - 1, item, 'X');
 
                     // W
-                    count += this.inspectField(row, col + 1, item, 'X');
+                    count += this.isThisAMine(row, col + 1, item, 'X');
 
                     // N-E
-                    count += this.inspectField(row + 1, col - 1, item, 'X');
+                    count += this.isThisAMine(row + 1, col - 1, item, 'X');
 
                     // N-W
-                    count += this.inspectField(row + 1, col + 1, item, 'X');
+                    count += this.isThisAMine(row + 1, col + 1, item, 'X');
 
                     // S-E
-                    count += this.inspectField(row - 1, col - 1, item, 'X');
+                    count += this.isThisAMine(row - 1, col - 1, item, 'X');
 
                     // S-W
-                    count += this.inspectField(row - 1, col + 1, item, 'X');
+                    count += this.isThisAMine(row - 1, col + 1, item, 'X');
 
                     if (item !== 'X') {
                         this.mineFields[index] = count;
                     }
                 });
-                //return this.mineFields;
             },
+            // is the field (row, col) inside the minefield?
             isValid(row, col) {
                 return (row >= 0) && (row < this.rows) && (col >= 0) && (col < this.columns);
             },
-            inspectField(row, col, item, value) {
+            // is the item a value (value = mine)?
+            isThisAMine(row, col, item, value) {
                 if (item !== value) {
                     if (this.isValid(row, col) === true) {
                         const field = col * this.rows + row;
@@ -110,8 +144,75 @@
                         else return 0;
                     } else return 0;
                 } else return 0;
+                // too many returns here. Clean this shit up later dude!
+            },
+            //
+            deconstruct(index) {
+                const row = index % this.rows;
+                const col = Math.floor(index / this.columns);
+                return [row, col];
+            },
+            //
+            getCloseFields(index, corners) {
+                let array = [];
+                const pos = this.deconstruct(index);
+                const row = pos[0];
+                const col = pos[1];
+                // N
+                if (this.isValid(row - 1, col) === true) {
+                    array.push(index - 1);
+                }
+                // // S
+                if (this.isValid(row + 1, col) === true) {
+                    array.push(index + 1);
+                }
+                // E
+                if (this.isValid(row, col + 1) === true) {
+                    array.push(index + this.rows);
+                }
+                // W
+                if (this.isValid(row, col - 1) === true) {
+                    array.push(index - this.rows);
+                }
+                if (corners === true) {
+                    // N - E
+                    if (this.isValid(row - 1, col + 1) === true) {
+                        array.push(index + this.rows - 1);
+                    }
+                    // // N - W
+                    if (this.isValid(row - 1, col - 1) === true) {
+                        array.push(index - this.rows - 1);
+                    }
+                    // // S - E
+                    if (this.isValid(row + 1, col + 1) === true) {
+                        array.push(index + this.rows + 1);
+                    }
+                    // // S - W
+                    if (this.isValid(row + 1, col - 1) === true) {
+                        array.push(index - this.rows + 1);
+                    }
+                }
+                return array;
+            },
+            //
+            exploreEmpty(field_index) {
+                if (this.mineFields[field_index] === 0 && this.exploredFields[field_index] === false) {
+                    // this item is empty
+                    this.$set(this.exploredFields, field_index, true);
+                    const neighbors = this.getCloseFields(field_index, false);
+                    neighbors.forEach((item) => {
+                        this.exploreEmpty(item);
+                    });
+                }
             }
         },
+        computed: {
+            classObject: function() {
+                if (this.message === 'GAME OVER!') {
+                    return 'red';
+                } else return '';
+            }
+        }
     }
 </script>
 
@@ -145,5 +246,9 @@
         /*display: inline-block;*/
         margin: 0;
         width: 35px;
+    }
+
+    .red {
+        color: red;
     }
 </style>
