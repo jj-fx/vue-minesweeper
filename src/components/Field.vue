@@ -1,5 +1,5 @@
 <template>
-    <div :class="classObject" @click="changeState">
+    <div :class="classObject" @click="changeState" @click.middle="makeGuess">
         {{ field }}
     </div>
 </template>
@@ -27,9 +27,16 @@
             lost: {
                 type: Boolean,
                 default: false,
-            }
+            },
+            guess: {
+                type: Boolean,
+                default: false,
+            },
         },
         methods: {
+            makeGuess() {
+                this.$emit("guess", this.id);
+            },
             changeState() {
                 if (this.lost === false) {
                     this.$emit("update", this.id);
@@ -38,6 +45,12 @@
         },
         computed: {
             classObject: function() {
+                // Guess
+                if (this.guess === true) {
+                    return 'square guess';
+                }
+
+                // Game Over
                 if (this.lost === true && this.field === 'X') {
                     return 'square mine';
                 }
@@ -88,6 +101,11 @@
         margin-top: -1px;
         padding: 0;
         //text-align: center;
+    }
+
+    .guess {
+        background: #ffa945;
+        color: rgba(0, 0, 0, 0);
     }
 
     .mine {

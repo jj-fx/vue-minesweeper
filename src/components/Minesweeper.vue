@@ -13,7 +13,9 @@
                                 :id="(row + (col - 1) * rows) - 1"
                                 :explored="exploredFields[(row + (col - 1) * rows) - 1]"
                                 :lost="gameOver"
+                                :guess="guesses[(row + (col - 1) * rows) - 1]"
                                 @update="exploreField"
+                                @guess="makeGuess"
                         />
                     </li>
                 </ul>
@@ -48,9 +50,13 @@
                 exploredFields: [],
                 message: '',
                 gameOver: false,
+                guesses: [],
             }
         },
         methods: {
+            makeGuess(field_index) {
+                this.$set(this.guess, field_index, true);
+            },
             setSize() {
                 const value = parseInt(document.getElementById("aaa").value);
                 this.mineCount = Math.floor(Math.pow(value, 2) / 5.5);
@@ -103,7 +109,9 @@
             resetMinefield(fieldSize, mineCount) {
                 this.message = 'Just click on cells...';
                 this.gameOver = false;
+                this.guesses = false;
                 // Init empty array
+                this.guesses = Array(Math.pow(fieldSize, 2)).fill(false);
                 this.mineFields = Array(Math.pow(fieldSize, 2)).fill('');
                 this.exploredFields = Array(Math.pow(fieldSize, 2)).fill(false);
 
