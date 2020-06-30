@@ -16,11 +16,11 @@
                     </li>
                 </ul>
             </div>
-            <div>
-                <h1 :class="classObject">
-                    {{ message }}
-                </h1>
-            </div>
+        </div>
+        <div>
+            <h1 :class="classObject">
+                {{ message }}
+            </h1>
         </div>
     </div>
 </template>
@@ -40,7 +40,7 @@
             return {
                 rows: 11,
                 columns: 11,
-                mineCount: 9,
+                mineCount: 15,
                 mineFields: [],
                 exploredFields: [],
                 message: '',
@@ -54,6 +54,16 @@
                 }
                 // set current
                 this.$set(this.exploredFields, field_index, true);
+                // win condition:
+                const currentMines = this.mineFields.filter(item => {
+                    return item === 'X';
+                });
+                const currentExplored = this.exploredFields.filter(item => {
+                    return item === false;
+                });
+                if (currentMines.length === currentExplored.length) {
+                    this.message = '!!! You Win !!!';
+                }
                 // explore empty fields
                 if (this.mineFields[field_index] === 0) {
                     const neighbors = this.getCloseFields(field_index);
@@ -79,6 +89,7 @@
                 });
             },
             resetMinefield(fieldSize, mineCount) {
+                this.message = '';
                 // Init empty array
                 this.mineFields = Array(Math.pow(fieldSize, 2)).fill('');
                 this.exploredFields = Array(Math.pow(fieldSize, 2)).fill(false);
@@ -210,6 +221,8 @@
             classObject: function() {
                 if (this.message === 'GAME OVER!') {
                     return 'red';
+                } else if (this.message === '!!! You Win !!!') {
+                    return 'green';
                 } else return '';
             }
         }
@@ -250,5 +263,9 @@
 
     .red {
         color: red;
+    }
+
+    .green {
+        color: greenyellow;
     }
 </style>
