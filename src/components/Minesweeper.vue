@@ -2,7 +2,8 @@
     <div class="game-container">
         <div class="game-area">
             <div class="reset-container">
-                <button class="reset" @click="resetMinefield(rows, mineCount)">RESET</button>
+                <input id="mine-counter" class="reset" type="number" :value="mineCounter" style="width: 40px">
+                <button class="reset" @click="resetMinefield(rows, maxMineCount)">RESET</button>
                 <input id="aaa" class="reset" type="number" :value="rows" style="width: 60px" @change="setSize">
             </div>
             <div class="minefield">
@@ -38,19 +39,26 @@
             Field,
         },
         created() {
-            this.resetMinefield(this.rows, this.mineCount);
+            this.resetMinefield(this.rows, this.maxMineCount);
             this.message = 'Just click on cells...'
+            //this.fields = { isMine:'', explored:''};
+            this.fields = {
+                value:[...this.mineFields],
+                explored:[...this.exploredFields]
+            };
+            //document.getElementById("mine-counter").disabled = true;
         },
         data() {
             return {
-                rows: 7,
-                columns: 7,
-                mineCount: 9,
+                rows: 5,
+                columns: 5,
+                maxMineCount: 5,
+                mineCounter: 0,
                 mineFields: [],
                 exploredFields: [],
                 message: '',
                 gameOver: false,
-                guesses: [],
+                fields: [],
             }
         },
         methods: {
@@ -59,10 +67,10 @@
             },
             setSize() {
                 const value = parseInt(document.getElementById("aaa").value);
-                this.mineCount = Math.floor(Math.pow(value, 2) / 5.5);
+                this.maxMineCount = Math.floor(Math.pow(value, 2) / 5.5);
                 this.rows = value;
                 this.columns = value;
-                this.resetMinefield(this.rows, this.mineCount);
+                this.resetMinefield(this.rows, this.maxMineCount);
             },
             exploreField(field_index) {
                 // game over
@@ -84,7 +92,7 @@
                 }
                 // explore empty fields
                 if (this.mineFields[field_index] === 0) {
-                    const neighbors = this.getCloseFields(field_index);
+                    const neighbors = this.getCloseFields(field_index, true);
                     neighbors.forEach((item) => {
                         this.exploreEmpty(item);
                     });
@@ -107,6 +115,7 @@
                 });
             },
             resetMinefield(fieldSize, mineCount) {
+                this.mineCounter = this.maxMineCount;
                 this.message = 'Just click on cells...';
                 this.gameOver = false;
                 this.guesses = false;
