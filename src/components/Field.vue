@@ -6,14 +6,6 @@
 <script>
     export default {
         name: "Field",
-        data() {
-            return {
-                // result: '',
-                // delay: 700,
-                // clicks: 0,
-                // timer: null
-            }
-        },
         props: {
             id: {
                 type: Number,
@@ -27,7 +19,11 @@
                 type: Boolean,
                 default: false,
             },
-            lost: {
+            youLose: {
+                type: Boolean,
+                default: false,
+            },
+            youWin: {
                 type: Boolean,
                 default: false,
             },
@@ -37,13 +33,8 @@
             },
         },
         methods: {
-            makeGuess() {
-                //this.$emit("guess", this.id);
-                //console.log('double click');
-            },
             changeState() {
-                //console.log(this.result);
-                if (this.lost === false) {
+                if (!this.youLose && !this.youWin) {
                     this.$emit("update", this.id);
                 }
             },
@@ -64,13 +55,8 @@
 
             },
             classObject: function() {
-                // Guess
-                if (this.guess === true) {
-                    return 'square guess';
-                }
-
                 // Game Over
-                if (this.lost === true && this.field === 'X') {
+                if (this.youLose === true && this.field === 'X') {
                     return 'square mine';
                 }
 
@@ -120,11 +106,6 @@
         margin-top: -1px;
         padding: 0;
         //text-align: center;
-    }
-
-    .guess {
-        background: #ffa945;
-        color: rgba(0, 0, 0, 0);
     }
 
     .mine {

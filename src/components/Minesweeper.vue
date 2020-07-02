@@ -4,7 +4,7 @@
             <div class="reset-container">
                 <input id="mine-counter" class="mine-counter" disabled="true" type="number" :value="mineCounter" style="width: 60px">
                 <button class="reset" @click="resetMinefield(rows, maxMineCount)">RESET</button>
-                <input id="game-size" class="reset" type="number" :value="rows" style="width: 60px" @change="setSize">
+                <input id="game-size" class="reset" type="number" :value="rows" style="width: 60px" @change="setMinefieldSize">
             </div>
             <div class="minefield">
                 <ul class="column" v-for="col in columns" :key="col">
@@ -13,10 +13,9 @@
                                 :field="mineFields[(row + (col - 1) * rows) - 1].toString()"
                                 :id="(row + (col - 1) * rows) - 1"
                                 :explored="exploredFields[(row + (col - 1) * rows) - 1]"
-                                :lost="gameOver"
-                                :guess="guesses[(row + (col - 1) * rows) - 1]"
+                                :youLose="gameOver"
+                                :youWin="gameWin"
                                 @update="exploreField"
-                                @guess="makeGuess"
                         />
                     </li>
                 </ul>
@@ -40,55 +39,48 @@
         },
         created() {
             this.resetMinefield(this.rows, this.maxMineCount);
-            this.message = 'Just click on cells...'
-            //this.fields = { isMine:'', explored:''};
             this.fields = {
                 value:[...this.mineFields],
                 explored:[...this.exploredFields]
             };
-            document.getElementById("mine-counter").disabled = true;
         },
         data() {
             return {
                 rows: 5,
                 columns: 5,
-                maxMineCount: 5,
+                difficulty: 15,
+                maxMineCount: 3,
                 mineCounter: 0,
                 mineFields: [],
                 exploredFields: [],
-                message: '',
+                message: 'Just click on cells...',
                 gameOver: false,
+                gameWin: false,
                 fields: [],
             }
         },
         methods: {
-            makeGuess(field_index) {
-                this.$set(this.guess, field_index, true);
-            },
-            setSize() {
-                const value = parseInt(document.getElementById("game-size").value);
-                this.maxMineCount = Math.floor(Math.pow(value, 2) / 5.5);
-                this.rows = value;
-                this.columns = value;
+            setMinefieldSize() {
+                const size = parseInt(document.getElementById("game-size").value);
+                this.maxMineCount = Math.floor(Math.pow(size, 2) / this.difficulty);
+                this.rows = size; this.columns = size;
                 this.resetMinefield(this.rows, this.maxMineCount);
             },
             exploreField(field_index) {
-                // game over
+                // Game Over
                 if (this.mineFields[field_index] === 'X') {
                     this.message = 'GAME OVER!';
                     this.gameOver = true;
                 }
-                // set current
+
+                // Set as explored
                 this.$set(this.exploredFields, field_index, true);
-                // win condition:
-                const currentMines = this.mineFields.filter(item => {
-                    return item === 'X';
-                });
-                const currentExplored = this.exploredFields.filter(item => {
-                    return item === false;
-                });
-                if (currentMines.length === currentExplored.length) {
+
+                // Win condition:
+                const leftToExplore = this.exploredFields.filter(item => { return item === false; });
+                if (this.maxMineCount === leftToExplore.length) {
                     this.message = '!!! You Win !!!';
+                    this.gameWin = true;
                 }
                 // explore empty fields
                 if (this.mineFields[field_index] === 0) {
@@ -115,12 +107,11 @@
                 });
             },
             resetMinefield(fieldSize, mineCount) {
+                this.gameWin = false;
                 this.mineCounter = this.maxMineCount;
                 this.message = 'Just click on cells...';
                 this.gameOver = false;
-                this.guesses = false;
                 // Init empty array
-                this.guesses = Array(Math.pow(fieldSize, 2)).fill(false);
                 this.mineFields = Array(Math.pow(fieldSize, 2)).fill('');
                 this.exploredFields = Array(Math.pow(fieldSize, 2)).fill(false);
 
@@ -144,25 +135,18 @@
 
                     // N
                     count += this.isThisAMine(row + 1, col, item, 'X');
-
                     // S
                     count += this.isThisAMine(row - 1, col, item, 'X');
-
                     // E
                     count += this.isThisAMine(row, col - 1, item, 'X');
-
                     // W
                     count += this.isThisAMine(row, col + 1, item, 'X');
-
                     // N-E
                     count += this.isThisAMine(row + 1, col - 1, item, 'X');
-
                     // N-W
                     count += this.isThisAMine(row + 1, col + 1, item, 'X');
-
                     // S-E
                     count += this.isThisAMine(row - 1, col - 1, item, 'X');
-
                     // S-W
                     count += this.isThisAMine(row - 1, col + 1, item, 'X');
 

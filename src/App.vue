@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <h1 class="build-code">build : a_02</h1>
+        <h1 class="build-code">build : a_03</h1>
         <!--<HelloWorld msg="Welcome to Your Vue.js App"/>-->
         <Minesweeper/>
     </div>
