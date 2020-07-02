@@ -2,9 +2,9 @@
     <div class="game-container">
         <div class="game-area">
             <div class="reset-container">
-                <input id="mine-counter" class="reset" type="number" :value="mineCounter" style="width: 40px">
+                <input id="mine-counter" class="mine-counter" disabled="true" type="number" :value="mineCounter" style="width: 60px">
                 <button class="reset" @click="resetMinefield(rows, maxMineCount)">RESET</button>
-                <input id="aaa" class="reset" type="number" :value="rows" style="width: 60px" @change="setSize">
+                <input id="game-size" class="reset" type="number" :value="rows" style="width: 60px" @change="setSize">
             </div>
             <div class="minefield">
                 <ul class="column" v-for="col in columns" :key="col">
@@ -46,7 +46,7 @@
                 value:[...this.mineFields],
                 explored:[...this.exploredFields]
             };
-            //document.getElementById("mine-counter").disabled = true;
+            document.getElementById("mine-counter").disabled = true;
         },
         data() {
             return {
@@ -66,7 +66,7 @@
                 this.$set(this.guess, field_index, true);
             },
             setSize() {
-                const value = parseInt(document.getElementById("aaa").value);
+                const value = parseInt(document.getElementById("game-size").value);
                 this.maxMineCount = Math.floor(Math.pow(value, 2) / 5.5);
                 this.rows = value;
                 this.columns = value;
@@ -273,12 +273,21 @@
         color: #42b983;
     }
 
+    .mine-counter {
+        -webkit-appearance: none;
+        margin: 0;
+        font-size: 30px;
+    }
+
     .game-container {
         //height: 900px;
     }
 
     .reset-container {
         margin-bottom: 20px;
+        //width: 400px;
+        display: flex;
+        justify-content: space-evenly;
     }
 
     .reset {
@@ -297,7 +306,7 @@
     .minefield {
         display: flex;
         justify-content: center;
-        background-color: #5f5f65;
+        background-color: #7d7d84;
         //border-radius: 5px;
     }
 

@@ -50,25 +50,18 @@
         },
         computed: {
             textureObject: function() {
-                if (this.field === '1') {
-                    return require('@/assets/number_1.png');
-                } else if (this.field === '2') {
-                    return require('@/assets/number_2.png');
-                } else if (this.field === '3') {
-                    return require('@/assets/number_3.png');
-                } else if (this.field === '4') {
-                    return require('@/assets/number_4.png');
-                } else if (this.field === '5') {
-                    return require('@/assets/number_5.png');
-                } else if (this.field === '6') {
-                    return require('@/assets/number_6.png');
-                } else if (this.field === '7') {
-                    return require('@/assets/number_7.png');
-                } else if (this.field === '8') {
-                    return require('@/assets/number_8.png');
+                let num = 0;
+                for (let i=1; i<=8; i++) {
+                    if (this.field === i.toString()) {
+                        num = i.toString();
+                    }
+                }
+                if (this.field === '0' || this.explored === false) {
+                    return require(`@/assets/null.png`);
                 } else if (this.field === 'X') {
                     return require('@/assets/mine.png');
-                } else return '';
+                } else return require(`@/assets/number_${num}.png`);
+
             },
             classObject: function() {
                 // Guess
@@ -118,7 +111,7 @@
         width: 54px;
         //line-height: 44px;
         //background: #c9c9c9;
-        border: 3px solid #767b7b;
+        border: 3px solid #32302e;
         border-radius: 5px;
         float: left;
         font-size: 24px;
@@ -140,7 +133,7 @@
     }
 
     .unexplored {
-        //background: #3d3936;
+        background-color: #181716;
         //color: rgba(0, 0, 0, 0);
     }
 
@@ -149,8 +142,8 @@
     }
 
     .v1 {
-        background-color: rgb(238, 236, 124);
-        filter: brightness(0.75) saturate(1);
+        background-color: rgb(227, 219, 164);
+        filter: brightness(0.75) saturate(2);
     }
 
     .v2 {
