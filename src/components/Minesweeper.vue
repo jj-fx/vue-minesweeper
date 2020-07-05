@@ -51,8 +51,8 @@
                 difficulty: 7.5,
                 maxMineCount: 3,
                 mineCounter: 0,
-                mineFields: [],
-                exploredFields: [],
+                mineFields: [], //this.fields.value
+                exploredFields: [], //this.fields.explored
                 message: 'Just click on cells...',
                 gameOver: false,
                 gameWin: false,
