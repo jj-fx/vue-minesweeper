@@ -61,11 +61,11 @@
                     else if (this.field === 'X')
                         texture = 'X';
                 }
+                if (!this.explored)
+                    texture = 'unexplored'
                 // Game Over
                 if (this.youLose && this.field === 'X')
                     texture = 'mine';
-                if (!this.explored)
-                    texture = 'unexplored'
 
                 return `square ${texture}`;
             }

@@ -48,7 +48,7 @@
             return {
                 rows: 5,
                 columns: 5,
-                difficulty: 15,
+                difficulty: 7.5,
                 maxMineCount: 3,
                 mineCounter: 0,
                 mineFields: [],
@@ -71,40 +71,42 @@
                 if (this.mineFields[field_index] === 'X') {
                     this.message = 'GAME OVER!';
                     this.gameOver = true;
-                }
+                    //this.$set(this.exploredFields, field_index, true);
+                } //else {
+                    // Set as explored
+                    this.$set(this.exploredFields, field_index, true);
 
-                // Set as explored
-                this.$set(this.exploredFields, field_index, true);
-
-                // Win condition:
-                const leftToExplore = this.exploredFields.filter(item => { return item === false; });
-                if (this.maxMineCount === leftToExplore.length) {
-                    this.message = '!!! You Win !!!';
-                    this.gameWin = true;
-                }
-                // explore empty fields
-                if (this.mineFields[field_index] === 0) {
-                    const neighbors = this.getCloseFields(field_index, true);
-                    neighbors.forEach((item) => {
-                        this.exploreEmpty(item);
-                    });
-                }
-                // get the expanded
-                const toExpand = new Set();
-                this.exploredFields.forEach((item, index) => {
-                    if (this.mineFields[index] === 0 && item === true) {
-                        const neighbors = this.getCloseFields(index, true);
+                    // explore empty fields
+                    if (this.mineFields[field_index] === 0) {
+                        const neighbors = this.getCloseFields(field_index, true);
                         neighbors.forEach((item) => {
-                            toExpand.add(item);
+                            this.exploreEmpty(item);
                         });
                     }
-                });
-                // unhide expansion
-                toExpand.forEach((item) => {
-                    if (this.exploredFields[item] === false) {
-                        this.$set(this.exploredFields, item, true);
+                    // get the expanded
+                    const toExpand = new Set();
+                    this.exploredFields.forEach((item, index) => {
+                        if (this.mineFields[index] === 0 && item === true) {
+                            const neighbors = this.getCloseFields(index, true);
+                            neighbors.forEach((item) => {
+                                toExpand.add(item);
+                            });
+                        }
+                    });
+                    // unhide expansion
+                    toExpand.forEach((item) => {
+                        if (this.exploredFields[item] === false) {
+                            this.$set(this.exploredFields, item, true);
+                        }
+                    });
+
+                    // Win condition:
+                    const leftToExplore = this.exploredFields.filter(item => { return item === false; });
+                    if (this.maxMineCount === leftToExplore.length && !this.gameOver) {
+                        this.message = '!!! You Win !!!';
+                        this.gameWin = true;
                     }
-                });
+                //}
             },
             resetMinefield(fieldSize, mineCount) {
                 this.gameWin = false;
@@ -233,7 +235,7 @@
         },
         computed: {
             classObject: function() {
-                if (this.message === 'GAME OVER!') {
+                if (this.gameOver) {
                     return 'game-over bottom';
                 } else if (this.message === '!!! You Win !!!') {
                     return 'win bottom';
