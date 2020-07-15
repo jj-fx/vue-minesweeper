@@ -1,7 +1,6 @@
 <template>
     <div id="app">
-        <h1 class="build-code">build : a_03</h1>
-        <!--<HelloWorld msg="Welcome to Your Vue.js App"/>-->
+        <h1 class="build-code">build : {{ build }}</h1>
         <Minesweeper/>
     </div>
 </template>
@@ -11,6 +10,11 @@
 
     export default {
         name: 'App',
+        data() {
+            return {
+                build: 'a_04'
+            }
+        },
         components: {
             //HelloWorld,
             Minesweeper,
@@ -31,6 +35,7 @@
         margin-top: 60px;
         background-color: #3a3a3a;
     }
+
     .build-code {
         text-align: left;
         font-size: 18px;

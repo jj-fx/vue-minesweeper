@@ -30,12 +30,10 @@
 </template>
 
 <script>
-    import Field from "@/components/Field";
-
     export default {
         name: "Minesweeper",
         components: {
-            Field,
+            'Field' : require('@/components/Field').default,
         },
         created() {
             this.resetMinefield(this.rows, this.maxMineCount);
